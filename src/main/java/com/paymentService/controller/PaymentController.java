@@ -1,10 +1,15 @@
 package com.paymentService.controller;
 
-import com.paymentService.model.Payment;
+import com.paymentService.dto.PaymentRequest;
+import com.paymentService.dto.PaymentResponse;
+import com.paymentService.model.PaymentStatus;
 import com.paymentService.service.PaymentService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/payments")
@@ -17,17 +22,27 @@ public class PaymentController {
     }
 
     @PostMapping
-    public Payment createPayment(@RequestBody Payment payment) {
-        return service.createPayment(payment);
+    public ResponseEntity<PaymentResponse> createPayment(@Valid @RequestBody PaymentRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createPayment(request));
     }
 
     @GetMapping("/{id}")
-    public Optional<Payment> getPayment(@PathVariable Long id) {
-        return service.getPayment(id);
+    public ResponseEntity<PaymentResponse> getPayment(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getPaymentById(id));
     }
 
     @GetMapping("/booking/{bookingId}")
-    public Optional<Payment> getByBookingId(@PathVariable String bookingId) {
-        return service.getByBookingId(bookingId);
+    public ResponseEntity<PaymentResponse> getByBookingId(@PathVariable String bookingId) {
+        return ResponseEntity.ok(service.getByBookingId(bookingId));
+    }
+
+    @PutMapping("/{id}/refund")
+    public ResponseEntity<PaymentResponse> refundPayment(@PathVariable Long id) {
+        return ResponseEntity.ok(service.refundPayment(id));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<PaymentResponse>> getByStatus(@PathVariable PaymentStatus status) {
+        return ResponseEntity.ok(service.getPaymentsByStatus(status));
     }
 }
