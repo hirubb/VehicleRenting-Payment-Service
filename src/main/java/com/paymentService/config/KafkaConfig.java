@@ -52,4 +52,9 @@ public class KafkaConfig {
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
+
+    @Bean
+    public NewTopic paymentSuccessTopic() {
+        return new NewTopic("payment-success-topic", 1, (short) 1);
+    }
 }
