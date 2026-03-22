@@ -101,7 +101,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: payment-service
-          image: ${{ needs.build-and-push.outputs.image }}
+          image: 746669214995.dkr.ecr.ap-south-1.amazonaws.com/payment-service:${{ github.sha }}
 
       - name: Deploy to ECS service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
