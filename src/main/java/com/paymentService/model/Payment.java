@@ -21,6 +21,9 @@ public class Payment {
     @Column(nullable = false)
     private Double amount;
 
+    @Column(nullable = false)
+    private Long customerId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethod paymentMethod;

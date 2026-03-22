@@ -11,6 +11,7 @@ public class PaymentResponse {
     private Long id;
     private String bookingId;
     private Double amount;
+    private Long customerId;
     private PaymentMethod paymentMethod;
     private PaymentStatus status;
     private LocalDateTime createdAt;

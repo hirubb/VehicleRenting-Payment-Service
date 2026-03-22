@@ -27,6 +27,7 @@ public class PaymentService {
         Payment payment = new Payment();
         payment.setBookingId(request.getBookingId());
         payment.setAmount(request.getAmount());
+        payment.setCustomerId(request.getCustomerId());
         payment.setPaymentMethod(request.getPaymentMethod());
         payment.setStatus(PaymentStatus.SUCCESS); // In real apps, call a payment gateway here
 
@@ -62,11 +63,19 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
+    public List<PaymentResponse> getPaymentsByCustomerId(Long customerId) {
+        return repository.findByCustomerId(customerId)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     private PaymentResponse mapToResponse(Payment payment) {
         PaymentResponse response = new PaymentResponse();
         response.setId(payment.getId());
         response.setBookingId(payment.getBookingId());
         response.setAmount(payment.getAmount());
+        response.setCustomerId(payment.getCustomerId());
         response.setPaymentMethod(payment.getPaymentMethod());
         response.setStatus(payment.getStatus());
         response.setCreatedAt(payment.getCreatedAt());

@@ -18,6 +18,9 @@ public class PaymentRequest {
     @Positive(message = "Amount must be positive")
     private Double amount;
 
+    @NotNull(message = "Customer ID is required")
+    private Long customerId;
+
     @NotNull(message = "Payment method is required")
     private PaymentMethod paymentMethod;
 
