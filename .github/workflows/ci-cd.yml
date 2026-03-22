@@ -29,6 +29,9 @@ jobs:
           cache: maven
 
       - name: Run tests
+        env:
+          EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://localhost:8761/eureka
+          PAYMENT_ALB_HOST: localhost
         run: mvn test -B
 
       - name: SonarCloud scan
