@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">paymentService</a> &gt; <a href="index.source.html" class="el_package">com.paymentService.service</a> &gt; <span class="el_source">PaymentService.java</span></div><h1>PaymentService.java</h1><pre class="source lang-java linenums">package com.paymentService.service;
+
+import com.paymentService.dto.PaymentRequest;
+import com.paymentService.dto.PaymentResponse;
+import com.paymentService.exception.PaymentNotFoundException;
+import com.paymentService.model.Payment;
+import com.paymentService.model.PaymentStatus;
+import com.paymentService.repository.PaymentRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class PaymentService {
+
+    private final PaymentRepository repository;
+
+<span class="fc" id="L19">    public PaymentService(PaymentRepository repository) {</span>
+<span class="fc" id="L20">        this.repository = repository;</span>
+<span class="fc" id="L21">    }</span>
+
+    public PaymentResponse createPayment(PaymentRequest request) {
+<span class="nc" id="L24">        Payment payment = new Payment();</span>
+<span class="nc" id="L25">        payment.setBookingId(request.getBookingId());</span>
+<span class="nc" id="L26">        payment.setAmount(request.getAmount());</span>
+<span class="nc" id="L27">        payment.setPaymentMethod(request.getPaymentMethod());</span>
+<span class="nc" id="L28">        payment.setStatus(PaymentStatus.SUCCESS); // In real apps, call a payment gateway here</span>
+
+<span class="nc" id="L30">        Payment saved = repository.save(payment);</span>
+<span class="nc" id="L31">        return mapToResponse(saved);</span>
+    }
+
+    public PaymentResponse getPaymentById(Long id) {
+<span class="nc" id="L35">        Payment payment = repository.findById(id)</span>
+<span class="nc" id="L36">                .orElseThrow(() -&gt; new PaymentNotFoundException(&quot;Payment not found with id: &quot; + id));</span>
+<span class="nc" id="L37">        return mapToResponse(payment);</span>
+    }
+
+    public PaymentResponse getByBookingId(String bookingId) {
+<span class="nc" id="L41">        Payment payment = repository.findByBookingId(bookingId)</span>
+<span class="nc" id="L42">                .orElseThrow(() -&gt; new PaymentNotFoundException(&quot;Payment not found for booking: &quot; + bookingId));</span>
+<span class="nc" id="L43">        return mapToResponse(payment);</span>
+    }
+
+    public PaymentResponse refundPayment(Long id) {
+<span class="nc" id="L47">        Payment payment = repository.findById(id)</span>
+<span class="nc" id="L48">                .orElseThrow(() -&gt; new PaymentNotFoundException(&quot;Payment not found with id: &quot; + id));</span>
+<span class="nc" id="L49">        payment.setStatus(PaymentStatus.REFUNDED);</span>
+<span class="nc" id="L50">        return mapToResponse(repository.save(payment));</span>
+    }
+
+    public List&lt;PaymentResponse&gt; getPaymentsByStatus(PaymentStatus status) {
+<span class="nc" id="L54">        return repository.findByStatus(status)</span>
+<span class="nc" id="L55">                .stream()</span>
+<span class="nc" id="L56">                .map(this::mapToResponse)</span>
+<span class="nc" id="L57">                .collect(Collectors.toList());</span>
+    }
+
+    private PaymentResponse mapToResponse(Payment payment) {
+<span class="nc" id="L61">        PaymentResponse response = new PaymentResponse();</span>
+<span class="nc" id="L62">        response.setId(payment.getId());</span>
+<span class="nc" id="L63">        response.setBookingId(payment.getBookingId());</span>
+<span class="nc" id="L64">        response.setAmount(payment.getAmount());</span>
+<span class="nc" id="L65">        response.setPaymentMethod(payment.getPaymentMethod());</span>
+<span class="nc" id="L66">        response.setStatus(payment.getStatus());</span>
+<span class="nc" id="L67">        response.setCreatedAt(payment.getCreatedAt());</span>
+<span class="nc" id="L68">        return response;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
