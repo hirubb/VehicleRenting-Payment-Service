@@ -33,7 +33,7 @@ jobs:
           EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://localhost:8761/eureka
           PAYMENT_ALB_HOST: localhost
           KAFKA_URL: localhost:9092
-        run: mvn test -B
+        run: mvn test -B -e 2>&1 | tail -100
 
       - name: SonarCloud scan
         env:
