@@ -18,4 +18,11 @@ public class KafkaConsumerService {
         // TODO: Process the event. 
         // If Customer Service is sending a request to check payment status, process it here.
     }
+
+    @KafkaListener(topics = "booking-created", groupId = "payment-group")
+    public void consumeBookingCreated(String message) {
+        logger.info("Received booking event from 'booking-created': {}", message);
+        
+        // TODO: Create a pending payment record or notify external gateway
+    }
 }
