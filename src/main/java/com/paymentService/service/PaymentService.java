@@ -6,8 +6,6 @@ import com.paymentService.exception.PaymentNotFoundException;
 import com.paymentService.model.Payment;
 import com.paymentService.model.PaymentStatus;
 import com.paymentService.repository.PaymentRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,13 +18,9 @@ public class PaymentService {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
     private final PaymentRepository repository;
-    private final KafkaProducerService kafkaProducerService;
-    private final ObjectMapper objectMapper;
 
-    public PaymentService(PaymentRepository repository, KafkaProducerService kafkaProducerService, ObjectMapper objectMapper) {
+    public PaymentService(PaymentRepository repository) {
         this.repository = repository;
-        this.kafkaProducerService = kafkaProducerService;
-        this.objectMapper = objectMapper;
     }
 
     public PaymentResponse createPayment(PaymentRequest request) {
@@ -38,14 +32,6 @@ public class PaymentService {
 
         Payment saved = repository.save(payment);
         PaymentResponse response = mapToResponse(saved);
-
-        // Send Kafka event to Customer Service
-        try {
-            String message = objectMapper.writeValueAsString(response);
-            kafkaProducerService.sendPaymentStatus("payment-success-topic", message);
-        } catch (JsonProcessingException e) {
-            logger.error("Error serializing payment response for Kafka", e);
-        }
 
         return response;
     }
