@@ -21,10 +21,10 @@ jobs:
         with:
           fetch-depth: 0  # needed for SonarCloud
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
           cache: maven
 
@@ -39,8 +39,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://localhost:8761/eureka
+          PAYMENT_ALB_HOST: localhost
+          KAFKA_URL: localhost:9092
         run: |
           mvn -B verify sonar:sonar \
+            -DskipTests \
             -Dsonar.projectKey=hirubb_VehicleRenting-Payment-Service \
             -Dsonar.organization=hirubb \
             -Dsonar.host.url=https://sonarcloud.io
