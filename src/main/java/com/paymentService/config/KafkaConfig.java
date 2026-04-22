@@ -57,4 +57,9 @@ public class KafkaConfig {
     public NewTopic paymentSuccessTopic() {
         return new NewTopic("payment-success-topic", 1, (short) 1);
     }
+
+    @Bean
+    public NewTopic bookingCreatedTopic() {
+        return new NewTopic("booking-created", 1, (short) 1);
+    }
 }
